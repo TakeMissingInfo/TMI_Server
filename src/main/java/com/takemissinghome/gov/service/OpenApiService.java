@@ -1,6 +1,6 @@
 package com.takemissinghome.gov.service;
 
-import com.takemissinghome.gov.domain.response.ResponseModel;
+import com.takemissinghome.gov.response.ResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -19,32 +19,45 @@ import java.nio.file.Files;
 public class OpenApiService {
 
     private final Resource serverKeyFile = new ClassPathResource("openapi/openapi_server_key");
-    private final String lowInComeUrl = "http://api.korea.go.kr/openapi/svc/list?lrgAstCd=&mdmAstCd=&smallAstCd=&jrsdOrgCd=&srhQuery=%EC%A0%80%EC%86%8C%EB%93%9D%EC%B8%B5&pageIndex=1&pageSize=100&format=xml&serviceKey=";
+    private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=2&format=xml";
 
-    public String getDate() throws IOException, JAXBException {
+    public ResponseModel getBenefitDataOfWeekPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
+
+        addBenefitCode(benefitCode);
+        addWeakPersonCode(weakPersonCode);
 
         String serverKey = Files.readAllLines(serverKeyFile.getFile().toPath()).get(0);
-        HttpURLConnection conn = (HttpURLConnection) new URL(lowInComeUrl + serverKey).openConnection();
+        addServerKey(serverKey);
+
+        HttpURLConnection conn = (HttpURLConnection) new URL(weakPersonUrl).openConnection();
         conn.connect();
 
         BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
 
-        StringBuilder xmlInfo = convertTo(reader);
+        String xmlInfo = reader.readLine();
+        String filteredXmlInfo = filterOutXmlInfo(xmlInfo);
 
         JAXBContext jaxbContext = JAXBContext.newInstance(ResponseModel.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        final ResponseModel responseModel = (ResponseModel) unmarshaller.unmarshal(new StringReader(xmlInfo.toString()));
 
-        return xmlInfo.toString();
+        return (ResponseModel) unmarshaller.unmarshal(new StringReader(filteredXmlInfo));
     }
 
-    private StringBuilder convertTo(BufferedReader reader) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb;
+    private void addBenefitCode(String code) {
+        weakPersonUrl += "&lrgAstCd=" + code;
+    }
+
+    private void addWeakPersonCode(String weakPersonCode) {
+        weakPersonUrl += "&srhQuery=" + weakPersonCode;
+    }
+
+    private void addServerKey(String serverKey) {
+        weakPersonUrl += "&serviceKey=" + serverKey;
+    }
+
+    private String filterOutXmlInfo(String xmlInfo) {
+        xmlInfo = xmlInfo.replaceAll("&lt;!HS&gt;", "");
+        return xmlInfo.replaceAll("&lt;!HE&gt;", "");
     }
 }
