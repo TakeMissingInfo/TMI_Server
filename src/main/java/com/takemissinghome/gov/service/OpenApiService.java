@@ -21,7 +21,7 @@ public class OpenApiService {
     private final Resource serverKeyFile = new ClassPathResource("openapi/openapi_server_key");
     private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=2&format=xml";
 
-    public ResponseModel getBenefitDataOfWeekPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
+    public ResponseModel getBenefitDataOfWeakPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
 
         addBenefitCode(benefitCode);
         addWeakPersonCode(weakPersonCode);
