@@ -1,22 +1,24 @@
-package com.takemissinghome.gov.domain.response;
+package com.takemissinghome.gov.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Getter
 @NoArgsConstructor
 @XmlRootElement(name = "svc")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Content {
-    private Long svcId;
+    private String svcId;
 
     // 혜택 제목
     private String svcNm;
 
     // 소관 기관
     private String jrsdDptAllNm;
-    private String svcEditDt;
 
     // 혜택 상세 내용
     private String svcPpo;
