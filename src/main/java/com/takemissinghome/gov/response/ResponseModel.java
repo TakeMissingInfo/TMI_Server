@@ -1,4 +1,4 @@
-package com.takemissinghome.gov.domain.response;
+package com.takemissinghome.gov.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
