@@ -22,7 +22,7 @@ public class OpenApiService {
     private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=2&format=xml";
 
     public ResponseModel getBenefitDataOfWeakPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
-
+      
         addBenefitCode(benefitCode);
         addWeakPersonCode(weakPersonCode);
 

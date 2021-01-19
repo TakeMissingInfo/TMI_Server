@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "svc")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Content {
-    private Long svcId;
+    private String svcId;
 
     // 혜택 제목
     private String svcNm;
