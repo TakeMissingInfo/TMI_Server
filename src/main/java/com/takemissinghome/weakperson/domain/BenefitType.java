@@ -27,6 +27,10 @@ public enum BenefitType {
                 .orElseThrow(() -> new IllegalArgumentException("not found benefit type"));
     }
 
+    public String getCode() {
+        return code;
+    }
+
     private boolean equalsCode(String code) {
         return this.code.equals(code);
     }

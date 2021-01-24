@@ -19,12 +19,11 @@ import java.nio.file.Files;
 public class OpenApiService {
 
     private final Resource serverKeyFile = new ClassPathResource("openapi/openapi_server_key");
-    private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=2&format=xml";
+    private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=100&format=xml";
 
-    public ResponseModel getBenefitDataOfWeakPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
-      
-        addBenefitCode(benefitCode);
+    public ResponseModel getBenefitDataOfWeakPerson(String weakPersonCode, String benefitCode) throws IOException, JAXBException {
         addWeakPersonCode(weakPersonCode);
+        addBenefitCode(benefitCode);
 
         String serverKey = Files.readAllLines(serverKeyFile.getFile().toPath()).get(0);
         addServerKey(serverKey);
@@ -44,12 +43,12 @@ public class OpenApiService {
         return (ResponseModel) unmarshaller.unmarshal(new StringReader(filteredXmlInfo));
     }
 
-    private void addBenefitCode(String code) {
-        weakPersonUrl += "&lrgAstCd=" + code;
-    }
-
     private void addWeakPersonCode(String weakPersonCode) {
         weakPersonUrl += "&srhQuery=" + weakPersonCode;
+    }
+
+    private void addBenefitCode(String code) {
+        weakPersonUrl += "&lrgAstCd=" + code;
     }
 
     private void addServerKey(String serverKey) {

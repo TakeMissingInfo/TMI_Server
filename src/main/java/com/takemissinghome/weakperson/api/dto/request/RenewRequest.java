@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class RenewRequest {
-    private String benefitCode;
-    private String weakPersonCode;
+    private String weakPersonType;
+    private String benefitType;
 }
