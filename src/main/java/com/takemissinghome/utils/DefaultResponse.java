@@ -1,7 +1,9 @@
 package com.takemissinghome.utils;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class DefaultResponse<T> {
 
     private final int statusCode;
