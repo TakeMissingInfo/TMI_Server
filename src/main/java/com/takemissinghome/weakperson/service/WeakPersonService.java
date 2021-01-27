@@ -1,7 +1,6 @@
 package com.takemissinghome.weakperson.service;
 
 import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
-import com.takemissinghome.weakperson.api.dto.request.WeakPersonDetailRequest;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPerson;
@@ -22,15 +21,13 @@ public class WeakPersonService {
     private final WeakPersonRepository weakPersonRepository;
 
     @Transactional
-    public void renewData(WeakPersonDetailRequest weakPersonDetailRequest) {
-        BenefitType benefitType = BenefitType.findByCode(weakPersonDetailRequest.getBenefitCode());
-        WeakPersonType weakPersonType = WeakPersonType.findByCode(weakPersonDetailRequest.getWeakPersonCode());
-
-        final List<WeakPerson> weakPeople = toWeakPersonDataList(benefitType, weakPersonType, weakPersonDetailRequest.getBenefitDataRequests());
+    public void renewData(WeakPersonType weakPersonType, BenefitType benefitType,
+                          List<BenefitDataRequest> benefitDataRequests) {
+        final List<WeakPerson> weakPeople = toWeakPeople(benefitType, weakPersonType, benefitDataRequests);
         weakPersonRepository.saveAll(weakPeople);
     }
 
-    private List<WeakPerson> toWeakPersonDataList(BenefitType benefitType, WeakPersonType weakPersonType, List<BenefitDataRequest> benefitDataRequests) {
+    private List<WeakPerson> toWeakPeople(BenefitType benefitType, WeakPersonType weakPersonType, List<BenefitDataRequest> benefitDataRequests) {
         return benefitDataRequests.stream()
                 .map(benefitDataRequest -> WeakPerson.builder()
                         .benefitType(benefitType)
@@ -43,5 +40,14 @@ public class WeakPersonService {
                                 benefitDataRequest.getDetailsInfoUrl()))
                         .build())
                 .collect(toList());
+    }
+
+    public List<BenefitData> findBenefitDataDetails(String weakPerson, List<String> benefits) {
+        final WeakPersonType weakPersonType = WeakPersonType.valueOf(weakPerson);
+        final List<BenefitType> benefitTypes = benefits.stream()
+                .map(BenefitType::valueOf)
+                .collect(toList());
+
+        return weakPersonRepository.findAllByWeakPersonTypeAndBenefitTypes(weakPersonType, benefitTypes);
     }
 }

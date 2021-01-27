@@ -1,6 +1,7 @@
 package com.takemissinghome.cafeteria.service;
 
 import com.takemissinghome.cafeteria.domain.FreeCafeteriaResponse;
+import com.takemissinghome.cafeteria.property.FreeCafeteriaProperty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -16,16 +17,12 @@ import java.nio.file.Files;
 public class FreeCafeteriaService {
 
     private final RestTemplate restTemplate;
-
-    private final Resource serviceKeyFile = new ClassPathResource("openapi/cafeteria_service_key");
-    private String freeCafeteriaPath = "http://api.data.go.kr/openapi/tn_pubr_public_free_mlsv_api?pageNo=0&numOfRows=100&type=json&serviceKey=";
+    private final FreeCafeteriaProperty freeCafeteriaProperty;
 
     public FreeCafeteriaResponse findCafeteriaInfo() throws IOException {
-        final String serviceKey = Files.readAllLines(serviceKeyFile.getFile().toPath()).get(0);
-        freeCafeteriaPath += serviceKey;
 
         ResponseEntity<FreeCafeteriaResponse> response = restTemplate.getForEntity(
-                freeCafeteriaPath, FreeCafeteriaResponse.class);
+                freeCafeteriaProperty.getUrl() + freeCafeteriaProperty.getKey(), FreeCafeteriaResponse.class);
 
         return response.getBody();
     }

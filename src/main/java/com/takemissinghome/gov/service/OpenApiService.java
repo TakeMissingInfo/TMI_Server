@@ -1,9 +1,8 @@
 package com.takemissinghome.gov.service;
 
+import com.takemissinghome.gov.property.OpenApiProperty;
 import com.takemissinghome.gov.response.ResponseModel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;
@@ -12,24 +11,22 @@ import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
 
 @Service
 @RequiredArgsConstructor
 public class OpenApiService {
 
-    private final Resource serverKeyFile = new ClassPathResource("openapi/openapi_server_key");
-    private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=2&format=xml";
+    private final OpenApiProperty openApiProperty;
 
-    public ResponseModel getBenefitDataOfWeakPerson(String benefitCode, String weakPersonCode) throws IOException, JAXBException {
-      
-        addBenefitCode(benefitCode);
-        addWeakPersonCode(weakPersonCode);
+    public ResponseModel getBenefitDataOfWeakPerson(String weakPersonCode, String benefitCode) throws IOException, JAXBException {
+        String newWeakPersonPath = openApiProperty.getUrl();
+        newWeakPersonPath = addWeakPersonCode(newWeakPersonPath, weakPersonCode);
+        newWeakPersonPath = addBenefitCode(newWeakPersonPath, benefitCode);
 
-        String serverKey = Files.readAllLines(serverKeyFile.getFile().toPath()).get(0);
-        addServerKey(serverKey);
+        newWeakPersonPath = addServerKey(newWeakPersonPath, openApiProperty.getKey());
+        System.out.println(newWeakPersonPath);
 
-        HttpURLConnection conn = (HttpURLConnection) new URL(weakPersonUrl).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(newWeakPersonPath).openConnection();
         conn.connect();
 
         BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
@@ -44,16 +41,16 @@ public class OpenApiService {
         return (ResponseModel) unmarshaller.unmarshal(new StringReader(filteredXmlInfo));
     }
 
-    private void addBenefitCode(String code) {
-        weakPersonUrl += "&lrgAstCd=" + code;
+    private String addWeakPersonCode(String newWeakPersonPath, String weakPersonCode) {
+        return newWeakPersonPath + "&srhQuery=" + weakPersonCode;
     }
 
-    private void addWeakPersonCode(String weakPersonCode) {
-        weakPersonUrl += "&srhQuery=" + weakPersonCode;
+    private String addBenefitCode(String newWeakPersonPath, String code) {
+        return newWeakPersonPath + "&lrgAstCd=" + code;
     }
 
-    private void addServerKey(String serverKey) {
-        weakPersonUrl += "&serviceKey=" + serverKey;
+    private String addServerKey(String newWeakPersonPath, String serverKey) {
+        return newWeakPersonPath + "&serviceKey=" + serverKey;
     }
 
     private String filterOutXmlInfo(String xmlInfo) {

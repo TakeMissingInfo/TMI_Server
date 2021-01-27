@@ -3,21 +3,28 @@ package com.takemissinghome.weakperson.api;
 import com.takemissinghome.gov.response.Content;
 import com.takemissinghome.gov.response.ResponseModel;
 import com.takemissinghome.gov.service.OpenApiService;
+import com.takemissinghome.utils.DefaultResponse;
 import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
 import com.takemissinghome.weakperson.api.dto.request.RenewRequest;
-import com.takemissinghome.weakperson.api.dto.request.WeakPersonDetailRequest;
+import com.takemissinghome.weakperson.api.dto.response.BenefitDataResponse;
+import com.takemissinghome.weakperson.domain.BenefitData;
+import com.takemissinghome.weakperson.domain.BenefitType;
+import com.takemissinghome.weakperson.domain.WeakPersonType;
 import com.takemissinghome.weakperson.service.WeakPersonService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.takemissinghome.utils.DefaultResponse.res;
+import static com.takemissinghome.utils.ResponseMessage.*;
+import static com.takemissinghome.utils.StatusCode.*;
 import static java.util.stream.Collectors.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/weakperson")
 @RequiredArgsConstructor
@@ -27,16 +34,33 @@ public class WeakPersonController {
     private final OpenApiService openApiService;
 
     @PostMapping("/renew")
-    public ResponseEntity<String> renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
+    public DefaultResponse renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
         try {
-            String benefitCode = renewRequest.getBenefitCode();
-            String weakPersonCode = renewRequest.getWeakPersonCode();
-            final ResponseModel responseModel = openApiService.getBenefitDataOfWeakPerson(benefitCode, weakPersonCode);
+            final WeakPersonType weakPersonType = WeakPersonType.valueOf(renewRequest.getWeakPersonType());
+            final BenefitType benefitType = BenefitType.valueOf(renewRequest.getBenefitType());
 
-            weakPersonService.renewData(new WeakPersonDetailRequest(benefitCode, weakPersonCode, toBenefitDataList(responseModel)));
-            return ResponseEntity.ok().body("success");
+            final ResponseModel responseModel = openApiService.getBenefitDataOfWeakPerson(
+                    weakPersonType.getCode(), benefitType.getCode());
+
+            weakPersonService.renewData(weakPersonType, benefitType, toBenefitDataList(responseModel));
+            return res(OK, RENEW_WEAK_PERSON);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error(e.getMessage());
+            return res(BAD_REQUEST, RENEW_WEAK_PERSON_FAIL);
+        }
+    }
+
+    @GetMapping("/{type}")
+    public DefaultResponse<List<BenefitDataResponse>> showBenefitDataDetails(@PathVariable(value = "type") String weakPersonType,
+                                                                             @RequestParam(value = "benefitType") List<String> benefitTypes) {
+        try {
+            final List<BenefitData> benefitDataList = weakPersonService.findBenefitDataDetails(weakPersonType, benefitTypes);
+            final List<BenefitDataResponse> benefitDataResponses = convertToBenefitDataResponse(benefitDataList);
+
+            return res(OK, FIND_BENEFIT_DATA, benefitDataResponses);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return res(NO_CONTENT, NOT_FOUND_BENEFIT_DATA);
         }
     }
 
@@ -44,6 +68,12 @@ public class WeakPersonController {
         final List<Content> contents = responseModel.getContents();
         return contents.stream()
                 .map(BenefitDataRequest::new)
+                .collect(toList());
+    }
+
+    private List<BenefitDataResponse> convertToBenefitDataResponse(List<BenefitData> benefitDataList) {
+        return benefitDataList.stream()
+                .map(BenefitDataResponse::new)
                 .collect(toList());
     }
 }
