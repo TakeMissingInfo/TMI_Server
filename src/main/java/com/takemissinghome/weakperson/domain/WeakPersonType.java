@@ -21,6 +21,10 @@ public enum WeakPersonType {
                 .orElseThrow(() -> new IllegalArgumentException("not found weakPerson type"));
     }
 
+    public String getCode() {
+        return code;
+    }
+
     private boolean equalsCode(String code) {
         return this.code.equals(code);
     }
