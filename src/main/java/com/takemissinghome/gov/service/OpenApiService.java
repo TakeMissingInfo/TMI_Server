@@ -19,16 +19,17 @@ import java.nio.file.Files;
 public class OpenApiService {
 
     private final Resource serverKeyFile = new ClassPathResource("openapi/openapi_server_key");
-    private String weakPersonUrl = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=100&format=xml";
+    private String weakPersonPath = "http://api.korea.go.kr/openapi/svc/list?pageIndex=1&pageSize=100&format=xml";
 
     public ResponseModel getBenefitDataOfWeakPerson(String weakPersonCode, String benefitCode) throws IOException, JAXBException {
-        addWeakPersonCode(weakPersonCode);
-        addBenefitCode(benefitCode);
+        String newWeakPersonpath = weakPersonPath;
+        newWeakPersonpath = addWeakPersonCode(newWeakPersonpath, weakPersonCode);
+        newWeakPersonpath = addBenefitCode(newWeakPersonpath, benefitCode);
 
         String serverKey = Files.readAllLines(serverKeyFile.getFile().toPath()).get(0);
-        addServerKey(serverKey);
+        newWeakPersonpath = addServerKey(newWeakPersonpath, serverKey);
 
-        HttpURLConnection conn = (HttpURLConnection) new URL(weakPersonUrl).openConnection();
+        HttpURLConnection conn = (HttpURLConnection) new URL(newWeakPersonpath).openConnection();
         conn.connect();
 
         BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
@@ -43,16 +44,16 @@ public class OpenApiService {
         return (ResponseModel) unmarshaller.unmarshal(new StringReader(filteredXmlInfo));
     }
 
-    private void addWeakPersonCode(String weakPersonCode) {
-        weakPersonUrl += "&srhQuery=" + weakPersonCode;
+    private String addWeakPersonCode(String newWeakPersonPath, String weakPersonCode) {
+        return newWeakPersonPath + "&srhQuery=" + weakPersonCode;
     }
 
-    private void addBenefitCode(String code) {
-        weakPersonUrl += "&lrgAstCd=" + code;
+    private String addBenefitCode(String newWeakPersonPath, String code) {
+        return newWeakPersonPath + "&lrgAstCd=" + code;
     }
 
-    private void addServerKey(String serverKey) {
-        weakPersonUrl += "&serviceKey=" + serverKey;
+    private String addServerKey(String newWeakPersonPath, String serverKey) {
+        return newWeakPersonPath + "&serviceKey=" + serverKey;
     }
 
     private String filterOutXmlInfo(String xmlInfo) {
