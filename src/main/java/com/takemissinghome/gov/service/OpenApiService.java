@@ -24,7 +24,6 @@ public class OpenApiService {
         newWeakPersonPath = addBenefitCode(newWeakPersonPath, benefitCode);
 
         newWeakPersonPath = addServerKey(newWeakPersonPath, openApiProperty.getKey());
-        System.out.println(newWeakPersonPath);
 
         HttpURLConnection conn = (HttpURLConnection) new URL(newWeakPersonPath).openConnection();
         conn.connect();
