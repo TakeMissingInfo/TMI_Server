@@ -1,14 +1,16 @@
 package com.takemissinghome.cafeteria.property;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConstructorBinding;
 
+@ConstructorBinding
 @ConfigurationProperties(prefix = "cafeteria")
-@Setter
+@RequiredArgsConstructor
 public class FreeCafeteriaProperty {
 
-    private String url;
-    private String key;
+    private final String url;
+    private final String key;
 
     public String getUrl() {
         return url;
