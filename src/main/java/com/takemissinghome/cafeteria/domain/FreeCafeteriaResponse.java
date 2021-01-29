@@ -3,27 +3,48 @@ package com.takemissinghome.cafeteria.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import javax.xml.bind.annotation.*;
+import java.util.List;
+
 @Getter
+@NoArgsConstructor
+@XmlRootElement(name = "response")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class FreeCafeteriaResponse {
 
+    @XmlElement(name = "body")
     private Body body;
 
-    @NoArgsConstructor
     @Getter
-    private class Body {
-        private Items items;
+    @NoArgsConstructor
+    @XmlRootElement(name = "body")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Body {
+
+        @XmlElementWrapper(name = "items")
+        @XmlElement(name = "item")
+        private List<Item> items;
+
+        private int totalCount;
+        private int numOfRows;
+        private int pageNo;
+
+        public List<Item> getItems() {
+            return items;
+        }
     }
 
-    @NoArgsConstructor
     @Getter
-    private class Items {
+    @NoArgsConstructor
+    @XmlRootElement(name = "item")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Item {
         private String fcltyNm;
-        private String Inmadr;
+        private String rdnmadr;
         private String phoneNumber;
         private String mlsvPlace;
         private String mlsvDate;
-        private String latitue;
-        private String longitude;
+        private double latitue;
+        private double longitude;
     }
 }

@@ -3,27 +3,44 @@ package com.takemissinghome.cafeteria.service;
 import com.takemissinghome.cafeteria.domain.FreeCafeteriaResponse;
 import com.takemissinghome.cafeteria.property.FreeCafeteriaProperty;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.nio.file.Files;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
 public class FreeCafeteriaService {
 
-    private final RestTemplate restTemplate;
     private final FreeCafeteriaProperty freeCafeteriaProperty;
 
-    public FreeCafeteriaResponse findCafeteriaInfo() throws IOException {
+    public FreeCafeteriaResponse findCafeteriaInfo() throws IOException, JAXBException {
 
-        ResponseEntity<FreeCafeteriaResponse> response = restTemplate.getForEntity(
-                freeCafeteriaProperty.getUrl() + freeCafeteriaProperty.getKey(), FreeCafeteriaResponse.class);
+        String newPath = freeCafeteriaProperty.getUrl() + freeCafeteriaProperty.getKey();
+        HttpURLConnection conn = (HttpURLConnection) new URL(newPath).openConnection();
+        conn.connect();
 
-        return response.getBody();
+        BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+        BufferedReader reader = new BufferedReader(new InputStreamReader(bis));
+
+        String xmlInfo = getXmlInfo(reader);
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(FreeCafeteriaResponse.class);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+        return (FreeCafeteriaResponse) unmarshaller.unmarshal(new StringReader(xmlInfo));
+    }
+
+    private String getXmlInfo(BufferedReader reader) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String current;
+        while ((current = reader.readLine()) != null) {
+            sb.append(current + "\n");
+        }
+        return sb.toString();
     }
 }
