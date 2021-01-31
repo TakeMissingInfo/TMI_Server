@@ -44,7 +44,7 @@ public class CafeteriaOpenApiResponse {
         private String phoneNumber;
         private String mlsvPlace;
         private String mlsvDate;
-        private double latitue;
+        private double latitude;
         private double longitude;
     }
 }
