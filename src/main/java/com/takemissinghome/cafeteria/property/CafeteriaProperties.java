@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConstructorBinding;
 @ConstructorBinding
 @ConfigurationProperties(prefix = "cafeteria")
 @RequiredArgsConstructor
-public class FreeCafeteriaProperty {
+public class CafeteriaProperties {
 
     private final String url;
     private final String key;

@@ -1,7 +1,7 @@
 package com.takemissinghome.cafeteria.service;
 
-import com.takemissinghome.cafeteria.domain.FreeCafeteriaResponse;
-import com.takemissinghome.cafeteria.property.FreeCafeteriaProperty;
+import com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse;
+import com.takemissinghome.cafeteria.property.CafeteriaProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +14,13 @@ import java.net.URL;
 
 @Service
 @RequiredArgsConstructor
-public class FreeCafeteriaService {
+public class CafeteriaOpenApiService {
 
-    private final FreeCafeteriaProperty freeCafeteriaProperty;
+    private final CafeteriaProperties cafeteriaProperties;
 
-    public FreeCafeteriaResponse findCafeteriaInfo() throws IOException, JAXBException {
+    public CafeteriaOpenApiResponse getCafeteriaResponse() throws IOException, JAXBException {
 
-        String newPath = freeCafeteriaProperty.getUrl() + freeCafeteriaProperty.getKey();
+        String newPath = cafeteriaProperties.getUrl() + cafeteriaProperties.getKey();
         HttpURLConnection conn = (HttpURLConnection) new URL(newPath).openConnection();
         conn.connect();
 
@@ -29,10 +29,10 @@ public class FreeCafeteriaService {
 
         String xmlInfo = getXmlInfo(reader);
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(FreeCafeteriaResponse.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(CafeteriaOpenApiResponse.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-        return (FreeCafeteriaResponse) unmarshaller.unmarshal(new StringReader(xmlInfo));
+        return (CafeteriaOpenApiResponse) unmarshaller.unmarshal(new StringReader(xmlInfo));
     }
 
     private String getXmlInfo(BufferedReader reader) throws IOException {

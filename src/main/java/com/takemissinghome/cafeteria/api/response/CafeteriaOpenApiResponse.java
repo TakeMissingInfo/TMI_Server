@@ -1,4 +1,4 @@
-package com.takemissinghome.cafeteria.domain;
+package com.takemissinghome.cafeteria.api.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @XmlRootElement(name = "response")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class FreeCafeteriaResponse {
+public class CafeteriaOpenApiResponse {
 
     @XmlElement(name = "body")
     private Body body;
