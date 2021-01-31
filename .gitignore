@@ -25,7 +25,7 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-*.yml
+application.yml
 
 ### NetBeans ###
 /nbproject/private/
@@ -39,3 +39,4 @@ out/
 
 ### Open Api ServerKey ###
 openapi_server_key
+cafeteria_service_key
