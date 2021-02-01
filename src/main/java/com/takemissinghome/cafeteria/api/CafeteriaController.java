@@ -4,8 +4,6 @@ import com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse;
 import com.takemissinghome.cafeteria.service.CafeteriaOpenApiService;
 import com.takemissinghome.cafeteria.service.CafeteriaService;
 import com.takemissinghome.utils.DefaultResponse;
-import com.takemissinghome.utils.ResponseMessage;
-import com.takemissinghome.utils.StatusCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
