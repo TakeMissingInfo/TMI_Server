@@ -27,4 +27,9 @@ public class CafeteriaService {
 
         cafeteriaRepository.saveAll(cafeterias);
     }
+
+    @Transactional(readOnly = true)
+    public List<Cafeteria> showCafeteriasNearby(double latitude, double longitude) {
+        return cafeteriaRepository.findAllNearby(latitude, longitude);
+    }
 }

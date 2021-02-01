@@ -1,6 +1,7 @@
 package com.takemissinghome.cafeteria.model;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import static javax.persistence.GenerationType.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cafeteria {
 
@@ -42,5 +44,9 @@ public class Cafeteria {
         this.operatingTime = operatingTime;
         this.operatingDate = operatingDate;
         this.location = location;
+    }
+
+    public double calculateDistance(double latitude, double longitude){
+        return this.location.calculateDistance(latitude, longitude);
     }
 }

@@ -12,4 +12,7 @@ public class ResponseMessage {
     //cafeteria
     public static final String RENEW_CAFETERIA = "급식소 정보 갱신 성공";
     public static final String RENEW_CAFETERIA_FAIL = "급식소 정보 갱신 실패";
+
+    public static final String FIND_CAFETERIA = "급식소 정보 찾기 성공";
+    public static final String NOT_FOUND_CAFETERIA = "급식소 정보 찾기 실패";
 }
