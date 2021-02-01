@@ -42,7 +42,7 @@ public class CafeteriaOpenApiResponse {
         private String fcltyNm;
         private String rdnmadr;
         private String phoneNumber;
-        private String mlsvPlace;
+        private String mlsvTime;
         private String mlsvDate;
         private double latitude;
         private double longitude;
