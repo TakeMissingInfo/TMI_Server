@@ -6,6 +6,7 @@ import com.takemissinghome.cafeteria.model.Cafeteria;
 import com.takemissinghome.cafeteria.service.CafeteriaOpenApiService;
 import com.takemissinghome.cafeteria.service.CafeteriaService;
 import com.takemissinghome.utils.DefaultResponse;
+import com.takemissinghome.weakperson.exception.WeakPersonException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CafeteriaController {
             cafeteriaService.renew(cafeteriaResponse.getBody().getItems());
 
             return res(OK, RENEW_CAFETERIA);
-        } catch (Exception e) {
+        } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(BAD_REQUEST, RENEW_CAFETERIA_FAIL);
         }
