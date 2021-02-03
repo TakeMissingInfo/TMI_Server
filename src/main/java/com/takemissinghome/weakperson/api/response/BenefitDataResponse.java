@@ -1,4 +1,4 @@
-package com.takemissinghome.weakperson.api.dto.response;
+package com.takemissinghome.weakperson.api.response;
 
 import com.takemissinghome.weakperson.domain.BenefitData;
 import lombok.Getter;

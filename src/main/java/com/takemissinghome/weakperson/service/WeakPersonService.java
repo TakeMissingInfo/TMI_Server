@@ -1,6 +1,6 @@
 package com.takemissinghome.weakperson.service;
 
-import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
+import com.takemissinghome.weakperson.api.request.BenefitDataRequest;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPerson;

@@ -1,4 +1,4 @@
-package com.takemissinghome.weakperson.api.dto.request;
+package com.takemissinghome.weakperson.api.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

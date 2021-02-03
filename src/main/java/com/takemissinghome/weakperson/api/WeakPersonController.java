@@ -4,9 +4,9 @@ import com.takemissinghome.gov.response.Content;
 import com.takemissinghome.gov.response.ResponseModel;
 import com.takemissinghome.gov.service.OpenApiService;
 import com.takemissinghome.utils.DefaultResponse;
-import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
-import com.takemissinghome.weakperson.api.dto.request.RenewRequest;
-import com.takemissinghome.weakperson.api.dto.response.BenefitDataResponse;
+import com.takemissinghome.weakperson.api.request.BenefitDataRequest;
+import com.takemissinghome.weakperson.api.request.RenewRequest;
+import com.takemissinghome.weakperson.api.response.BenefitDataResponse;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPersonType;
@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.takemissinghome.utils.DefaultResponse.res;
 import static com.takemissinghome.utils.ResponseMessage.*;
