@@ -10,6 +10,7 @@ import com.takemissinghome.weakperson.api.response.BenefitDataResponse;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPersonType;
+import com.takemissinghome.weakperson.exception.WeakPersonException;
 import com.takemissinghome.weakperson.service.WeakPersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,15 +35,15 @@ public class WeakPersonController {
     @PostMapping("/renew")
     public DefaultResponse renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
         try {
-            final WeakPersonType weakPersonType = WeakPersonType.valueOf(renewRequest.getWeakPersonType());
-            final BenefitType benefitType = BenefitType.valueOf(renewRequest.getBenefitType());
+            final WeakPersonType weakPersonType = WeakPersonType.findByName(renewRequest.getWeakPersonType());
+            final BenefitType benefitType = BenefitType.findByName(renewRequest.getBenefitType());
 
             final ResponseModel responseModel = openApiService.getBenefitDataOfWeakPerson(
                     weakPersonType.getCode(), benefitType.getCode());
-
             weakPersonService.renewData(weakPersonType, benefitType, toBenefitDataList(responseModel));
+
             return res(OK, RENEW_WEAK_PERSON);
-        } catch (Exception e) {
+        } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(BAD_REQUEST, RENEW_WEAK_PERSON_FAIL);
         }

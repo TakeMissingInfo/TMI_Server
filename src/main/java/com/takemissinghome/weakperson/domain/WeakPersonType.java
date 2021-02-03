@@ -1,6 +1,10 @@
 package com.takemissinghome.weakperson.domain;
 
+import com.takemissinghome.weakperson.exception.WeakPersonException;
+
 import java.util.Arrays;
+
+import static com.takemissinghome.weakperson.exception.WeakPersonStatusException.*;
 
 public enum WeakPersonType {
     DISABLE("%EC%9E%A5%EC%95%A0%EC%9D%B8"),
@@ -19,6 +23,14 @@ public enum WeakPersonType {
                 .filter(weakPersonType -> weakPersonType.equalsCode(code))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("not found weakPerson type"));
+    }
+
+    public static WeakPersonType findByName(String name) {
+        return Arrays.stream(values())
+                .filter(type -> type.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new WeakPersonException(
+                        INVALID_WEAK_PERSON_TYPE, String.format("input value: %s, not found weak person type", name)));
     }
 
     public String getCode() {

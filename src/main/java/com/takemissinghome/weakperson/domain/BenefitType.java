@@ -1,6 +1,11 @@
 package com.takemissinghome.weakperson.domain;
 
+import com.takemissinghome.weakperson.exception.WeakPersonException;
+import com.takemissinghome.weakperson.exception.WeakPersonStatusException;
+
 import java.util.Arrays;
+
+import static com.takemissinghome.weakperson.exception.WeakPersonStatusException.*;
 
 public enum BenefitType {
     EMPLOYMENT("취업/직장", "010000"),
@@ -25,6 +30,14 @@ public enum BenefitType {
                 .filter(benefitType -> benefitType.equalsCode(code))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("not found benefit type"));
+    }
+
+    public static BenefitType findByName(String name){
+        return Arrays.stream(values())
+                .filter(type -> type.name().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new WeakPersonException(
+                        INVALID_BENEFIT_TYPE, String.format("input value: %s, not found benefit type", name)));
     }
 
     public String getCode() {
