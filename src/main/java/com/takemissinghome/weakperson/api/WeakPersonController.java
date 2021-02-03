@@ -57,7 +57,7 @@ public class WeakPersonController {
             final List<BenefitDataResponse> benefitDataResponses = convertToBenefitDataResponse(benefitDataList);
 
             return res(OK, FIND_BENEFIT_DATA, benefitDataResponses);
-        } catch (Exception e) {
+        } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(NO_CONTENT, NOT_FOUND_BENEFIT_DATA);
         }
