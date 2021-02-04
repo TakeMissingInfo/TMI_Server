@@ -1,5 +1,6 @@
 package com.takemissinghome.cafeteria.api;
 
+import com.takemissinghome.cafeteria.api.request.CafeteriaRenewRequest;
 import com.takemissinghome.cafeteria.api.response.CafeteriaDetailsResponse;
 import com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse;
 import com.takemissinghome.cafeteria.model.Cafeteria;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse.*;
 import static com.takemissinghome.utils.DefaultResponse.res;
 import static com.takemissinghome.utils.ResponseMessage.*;
 import static com.takemissinghome.utils.StatusCode.*;
@@ -31,7 +33,7 @@ public class CafeteriaController {
     public DefaultResponse renew() {
         try {
             final CafeteriaOpenApiResponse cafeteriaResponse = cafeteriaOpenApiService.getCafeteriaResponse();
-            cafeteriaService.renew(cafeteriaResponse.getBody().getItems());
+            cafeteriaService.renew(toCafeteriasDetailsRequest(cafeteriaResponse.getBody().getItems()));
 
             return res(OK, RENEW_CAFETERIA);
         } catch (WeakPersonException e) {
@@ -51,6 +53,12 @@ public class CafeteriaController {
             log.error(e.getMessage());
             return res(NOT_FOUND, NOT_FOUND_CAFETERIA);
         }
+    }
+
+    private List<CafeteriaRenewRequest> toCafeteriasDetailsRequest(List<Item> items) {
+        return items.stream()
+                .map(CafeteriaRenewRequest::new)
+                .collect(toList());
     }
 
     private List<CafeteriaDetailsResponse> toCafeteriasDetailsResponse(List<Cafeteria> cafeterias) {
