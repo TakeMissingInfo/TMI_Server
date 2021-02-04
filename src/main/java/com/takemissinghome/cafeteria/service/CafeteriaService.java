@@ -1,6 +1,6 @@
 package com.takemissinghome.cafeteria.service;
 
-import com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse.Item;
+import com.takemissinghome.cafeteria.api.request.CafeteriaRenewRequest;
 import com.takemissinghome.cafeteria.exception.CafeteriaException;
 import com.takemissinghome.cafeteria.exception.CafeteriaExceptionStatus;
 import com.takemissinghome.cafeteria.model.Cafeteria;
@@ -21,13 +21,16 @@ public class CafeteriaService {
     private final CafeteriaRepository cafeteriaRepository;
 
     @Transactional
-    public void renew(List<Item> items) {
-        checkEmpty(items);
-        final List<Cafeteria> cafeterias = items.stream()
-                .map(item -> new Cafeteria(item.getFcltyNm(), item.getRdnmadr(), item.getPhoneNumber(),
-                        item.getMlsvTime(), item.getMlsvDate(), new Location(item.getLatitude(), item.getLongitude())))
+    public Integer renew(List<CafeteriaRenewRequest> cafeteriaRenewRequests) {
+        checkEmpty(cafeteriaRenewRequests);
+        final List<Cafeteria> cafeterias = cafeteriaRenewRequests.stream()
+                .map(renewRequest -> new Cafeteria(renewRequest.getFacilityName(), renewRequest.getAddress(),
+                        renewRequest.getPhoneNumber(), renewRequest.getOperatingTime(),
+                        renewRequest.getOperatingDate(), new Location(renewRequest.getLatitude(), renewRequest.getLongitude())))
                 .collect(toList());
         cafeteriaRepository.saveAll(cafeterias);
+
+        return cafeterias.size();
     }
 
     @Transactional(readOnly = true)
@@ -35,8 +38,8 @@ public class CafeteriaService {
         return cafeteriaRepository.findAllNearby(latitude, longitude);
     }
 
-    private void checkEmpty(List<Item> items) {
-        if(items.isEmpty()){
+    private void checkEmpty(List<CafeteriaRenewRequest> items) {
+        if (items.isEmpty()) {
             throw new CafeteriaException(CafeteriaExceptionStatus.EMPTY_VALUE, "renew data is empty");
         }
     }
