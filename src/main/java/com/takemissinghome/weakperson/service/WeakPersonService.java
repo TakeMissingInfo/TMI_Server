@@ -1,6 +1,6 @@
 package com.takemissinghome.weakperson.service;
 
-import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
+import com.takemissinghome.weakperson.api.request.BenefitDataRequest;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPerson;
@@ -27,6 +27,16 @@ public class WeakPersonService {
         weakPersonRepository.saveAll(weakPeople);
     }
 
+    public List<BenefitData> findBenefitDataDetails(String weakPerson, List<String> benefits) {
+        checkEmpty(benefits);
+        final WeakPersonType weakPersonType = WeakPersonType.findByName(weakPerson);
+        final List<BenefitType> benefitTypes = benefits.stream()
+                .map(BenefitType::findByName)
+                .collect(toList());
+
+        return weakPersonRepository.findAllByWeakPersonTypeAndBenefitTypes(weakPersonType, benefitTypes);
+    }
+
     private List<WeakPerson> toWeakPeople(BenefitType benefitType, WeakPersonType weakPersonType, List<BenefitDataRequest> benefitDataRequests) {
         return benefitDataRequests.stream()
                 .map(benefitDataRequest -> WeakPerson.builder()
@@ -42,12 +52,9 @@ public class WeakPersonService {
                 .collect(toList());
     }
 
-    public List<BenefitData> findBenefitDataDetails(String weakPerson, List<String> benefits) {
-        final WeakPersonType weakPersonType = WeakPersonType.valueOf(weakPerson);
-        final List<BenefitType> benefitTypes = benefits.stream()
-                .map(BenefitType::valueOf)
-                .collect(toList());
-
-        return weakPersonRepository.findAllByWeakPersonTypeAndBenefitTypes(weakPersonType, benefitTypes);
+    private void checkEmpty(List<String> benefits) {
+        if (benefits.isEmpty()) {
+            throw new IllegalArgumentException("benefits data is empty");
+        }
     }
 }

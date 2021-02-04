@@ -4,20 +4,19 @@ import com.takemissinghome.gov.response.Content;
 import com.takemissinghome.gov.response.ResponseModel;
 import com.takemissinghome.gov.service.OpenApiService;
 import com.takemissinghome.utils.DefaultResponse;
-import com.takemissinghome.weakperson.api.dto.request.BenefitDataRequest;
-import com.takemissinghome.weakperson.api.dto.request.RenewRequest;
-import com.takemissinghome.weakperson.api.dto.response.BenefitDataResponse;
+import com.takemissinghome.weakperson.api.request.BenefitDataRequest;
+import com.takemissinghome.weakperson.api.request.RenewRequest;
+import com.takemissinghome.weakperson.api.response.BenefitDataResponse;
 import com.takemissinghome.weakperson.domain.BenefitData;
 import com.takemissinghome.weakperson.domain.BenefitType;
 import com.takemissinghome.weakperson.domain.WeakPersonType;
+import com.takemissinghome.weakperson.exception.WeakPersonException;
 import com.takemissinghome.weakperson.service.WeakPersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.takemissinghome.utils.DefaultResponse.res;
 import static com.takemissinghome.utils.ResponseMessage.*;
@@ -36,15 +35,15 @@ public class WeakPersonController {
     @PostMapping("/renew")
     public DefaultResponse renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
         try {
-            final WeakPersonType weakPersonType = WeakPersonType.valueOf(renewRequest.getWeakPersonType());
-            final BenefitType benefitType = BenefitType.valueOf(renewRequest.getBenefitType());
+            final WeakPersonType weakPersonType = WeakPersonType.findByName(renewRequest.getWeakPersonType());
+            final BenefitType benefitType = BenefitType.findByName(renewRequest.getBenefitType());
 
             final ResponseModel responseModel = openApiService.getBenefitDataOfWeakPerson(
                     weakPersonType.getCode(), benefitType.getCode());
-
             weakPersonService.renewData(weakPersonType, benefitType, toBenefitDataList(responseModel));
+
             return res(OK, RENEW_WEAK_PERSON);
-        } catch (Exception e) {
+        } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(BAD_REQUEST, RENEW_WEAK_PERSON_FAIL);
         }
@@ -58,7 +57,7 @@ public class WeakPersonController {
             final List<BenefitDataResponse> benefitDataResponses = convertToBenefitDataResponse(benefitDataList);
 
             return res(OK, FIND_BENEFIT_DATA, benefitDataResponses);
-        } catch (Exception e) {
+        } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(NO_CONTENT, NOT_FOUND_BENEFIT_DATA);
         }

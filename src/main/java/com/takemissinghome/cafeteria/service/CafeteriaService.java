@@ -1,6 +1,8 @@
 package com.takemissinghome.cafeteria.service;
 
 import com.takemissinghome.cafeteria.api.response.CafeteriaOpenApiResponse.Item;
+import com.takemissinghome.cafeteria.exception.CafeteriaException;
+import com.takemissinghome.cafeteria.exception.CafeteriaExceptionStatus;
 import com.takemissinghome.cafeteria.model.Cafeteria;
 import com.takemissinghome.cafeteria.model.Location;
 import com.takemissinghome.cafeteria.repository.CafeteriaRepository;
@@ -20,16 +22,22 @@ public class CafeteriaService {
 
     @Transactional
     public void renew(List<Item> items) {
+        checkEmpty(items);
         final List<Cafeteria> cafeterias = items.stream()
                 .map(item -> new Cafeteria(item.getFcltyNm(), item.getRdnmadr(), item.getPhoneNumber(),
                         item.getMlsvTime(), item.getMlsvDate(), new Location(item.getLatitude(), item.getLongitude())))
                 .collect(toList());
-
         cafeteriaRepository.saveAll(cafeterias);
     }
 
     @Transactional(readOnly = true)
     public List<Cafeteria> showCafeteriasNearby(double latitude, double longitude) {
         return cafeteriaRepository.findAllNearby(latitude, longitude);
+    }
+
+    private void checkEmpty(List<Item> items) {
+        if(items.isEmpty()){
+            throw new CafeteriaException(CafeteriaExceptionStatus.EMPTY_VALUE, "renew data is empty");
+        }
     }
 }
