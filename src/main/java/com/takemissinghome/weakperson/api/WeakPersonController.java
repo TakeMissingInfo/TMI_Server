@@ -33,16 +33,16 @@ public class WeakPersonController {
     private final OpenApiService openApiService;
 
     @PostMapping("/renew")
-    public DefaultResponse renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
+    public DefaultResponse<Integer> renewWeakPersonData(@RequestBody RenewRequest renewRequest) {
         try {
             final WeakPersonType weakPersonType = WeakPersonType.findByName(renewRequest.getWeakPersonType());
             final BenefitType benefitType = BenefitType.findByName(renewRequest.getBenefitType());
 
             final ResponseModel responseModel = openApiService.getBenefitDataOfWeakPerson(
                     weakPersonType.getCode(), benefitType.getCode());
-            weakPersonService.renewData(weakPersonType, benefitType, toBenefitDataList(responseModel));
+            final Integer renewSize = weakPersonService.renewData(weakPersonType, benefitType, toBenefitDataList(responseModel));
 
-            return res(OK, RENEW_WEAK_PERSON);
+            return res(OK, RENEW_WEAK_PERSON, renewSize);
         } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(BAD_REQUEST, RENEW_WEAK_PERSON_FAIL);
