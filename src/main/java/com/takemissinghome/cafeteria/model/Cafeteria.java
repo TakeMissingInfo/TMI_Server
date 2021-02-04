@@ -21,7 +21,7 @@ public class Cafeteria {
     @Column(name = "facility_name")
     private String facilityName;
 
-    @Column(name = "address")
+    @Column(name = "address", unique = true)
     private String address;
 
     @Column(name = "phone_number")
