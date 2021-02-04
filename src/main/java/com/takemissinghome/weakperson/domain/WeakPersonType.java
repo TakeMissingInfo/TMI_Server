@@ -22,7 +22,8 @@ public enum WeakPersonType {
         return Arrays.stream(values())
                 .filter(weakPersonType -> weakPersonType.equalsCode(code))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("not found weakPerson type"));
+                .orElseThrow(() -> new WeakPersonException(INVALID_WEAK_PERSON_TYPE_CODE,
+                        String.format("input code: %s, not found weakPerson type", code)));
     }
 
     public static WeakPersonType findByName(String name) {
@@ -30,7 +31,8 @@ public enum WeakPersonType {
                 .filter(type -> type.name().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new WeakPersonException(
-                        INVALID_WEAK_PERSON_TYPE, String.format("input value: %s, not found weak person type", name)));
+                        INVALID_WEAK_PERSON_TYPE,
+                        String.format("input value: %s, not found weak person type", name)));
     }
 
     public String getCode() {
