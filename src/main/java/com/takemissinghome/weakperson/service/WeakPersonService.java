@@ -21,10 +21,12 @@ public class WeakPersonService {
     private final WeakPersonRepository weakPersonRepository;
 
     @Transactional
-    public void renewData(WeakPersonType weakPersonType, BenefitType benefitType,
+    public Integer renewData(WeakPersonType weakPersonType, BenefitType benefitType,
                           List<BenefitDataRequest> benefitDataRequests) {
         final List<WeakPerson> weakPeople = toWeakPeople(benefitType, weakPersonType, benefitDataRequests);
         weakPersonRepository.saveAll(weakPeople);
+
+        return weakPeople.size();
     }
 
     public List<BenefitData> findBenefitDataDetails(String weakPerson, List<String> benefits) {

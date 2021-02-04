@@ -30,12 +30,12 @@ public class CafeteriaController {
     private final CafeteriaService cafeteriaService;
 
     @PostMapping("/renew")
-    public DefaultResponse renew() {
+    public DefaultResponse<Integer> renew() {
         try {
             final CafeteriaOpenApiResponse cafeteriaResponse = cafeteriaOpenApiService.getCafeteriaResponse();
-            cafeteriaService.renew(toCafeteriasDetailsRequest(cafeteriaResponse.getBody().getItems()));
+            final Integer renewSize = cafeteriaService.renew(toCafeteriasDetailsRequest(cafeteriaResponse.getBody().getItems()));
 
-            return res(OK, RENEW_CAFETERIA);
+            return res(OK, RENEW_CAFETERIA, renewSize);
         } catch (WeakPersonException e) {
             log.error(e.getMessage());
             return res(BAD_REQUEST, RENEW_CAFETERIA_FAIL);

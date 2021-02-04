@@ -21,7 +21,7 @@ public class CafeteriaService {
     private final CafeteriaRepository cafeteriaRepository;
 
     @Transactional
-    public void renew(List<CafeteriaRenewRequest> cafeteriaRenewRequests) {
+    public Integer renew(List<CafeteriaRenewRequest> cafeteriaRenewRequests) {
         checkEmpty(cafeteriaRenewRequests);
         final List<Cafeteria> cafeterias = cafeteriaRenewRequests.stream()
                 .map(renewRequest -> new Cafeteria(renewRequest.getFacilityName(), renewRequest.getAddress(),
@@ -29,6 +29,8 @@ public class CafeteriaService {
                         renewRequest.getOperatingDate(), new Location(renewRequest.getLatitude(), renewRequest.getLongitude())))
                 .collect(toList());
         cafeteriaRepository.saveAll(cafeterias);
+
+        return cafeterias.size();
     }
 
     @Transactional(readOnly = true)
