@@ -1,6 +1,7 @@
 package com.takemissinghome.cafeteria.model;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,6 +37,7 @@ public class Cafeteria {
     @Embedded
     private Location location;
 
+    @Builder
     public Cafeteria(String facilityName, String address, String phoneNumber,
                      String operatingTime, String operatingDate, Location location) {
         this.facilityName = facilityName;

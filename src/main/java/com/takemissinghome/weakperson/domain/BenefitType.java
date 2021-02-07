@@ -1,7 +1,6 @@
 package com.takemissinghome.weakperson.domain;
 
 import com.takemissinghome.weakperson.exception.WeakPersonException;
-import com.takemissinghome.weakperson.exception.WeakPersonStatusException;
 
 import java.util.Arrays;
 
@@ -29,15 +28,18 @@ public enum BenefitType {
         return Arrays.stream(values())
                 .filter(benefitType -> benefitType.equalsCode(code))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("not found benefit type"));
+                .orElseThrow(() -> new WeakPersonException(
+                        INVALID_BENEFIT_TYPE_CODE,
+                        String.format("input code: %s, not found benefit type", code)));
     }
 
-    public static BenefitType findByName(String name){
+    public static BenefitType findByName(String name) {
         return Arrays.stream(values())
                 .filter(type -> type.name().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new WeakPersonException(
-                        INVALID_BENEFIT_TYPE, String.format("input value: %s, not found benefit type", name)));
+                        INVALID_BENEFIT_TYPE,
+                        String.format("input value: %s, not found benefit type", name)));
     }
 
     public String getCode() {
