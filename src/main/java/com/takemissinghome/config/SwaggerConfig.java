@@ -16,7 +16,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.toy.takemehome"))
+                .apis(RequestHandlerSelectors.basePackage("com.takemissinghome"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build();
     }

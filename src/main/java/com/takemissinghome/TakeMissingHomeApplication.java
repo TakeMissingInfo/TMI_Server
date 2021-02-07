@@ -9,5 +9,4 @@ public class TakeMissingHomeApplication {
     public static void main(String[] args) {
         SpringApplication.run(TakeMissingHomeApplication.class, args);
     }
-
 }
