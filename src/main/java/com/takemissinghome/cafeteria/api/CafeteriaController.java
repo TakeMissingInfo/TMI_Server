@@ -8,6 +8,7 @@ import com.takemissinghome.cafeteria.service.CafeteriaOpenApiService;
 import com.takemissinghome.cafeteria.service.CafeteriaService;
 import com.takemissinghome.utils.DefaultResponse;
 import com.takemissinghome.weakperson.exception.WeakPersonException;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import static com.takemissinghome.utils.ResponseMessage.*;
 import static com.takemissinghome.utils.StatusCode.*;
 import static java.util.stream.Collectors.toList;
 
+@Api(tags = "Cafeteria")
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/cafeteria")
@@ -29,6 +31,11 @@ public class CafeteriaController {
     private final CafeteriaOpenApiService cafeteriaOpenApiService;
     private final CafeteriaService cafeteriaService;
 
+    @ApiOperation(value = "Renew cafeteria data", notes = "급식소 정보 갱신")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "급식소 정보 갱신 성공"),
+            @ApiResponse(code = 400, message = "급식소 정보 갱신 실패")
+    })
     @PostMapping("/renew")
     public DefaultResponse<Integer> renew() {
         try {
@@ -42,10 +49,16 @@ public class CafeteriaController {
         }
     }
 
+    @ApiOperation(value = "Show cafeteria nearby current location", notes = "현재 위치로부터 가까운 급식소 정보 보여주기",
+            response = CafeteriaDetailsResponse.class, responseContainer = "List")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "급식소 정보 찾기 성공"),
+            @ApiResponse(code = 404, message = "급식소 정보 찾기 실패")
+    })
     @GetMapping("/{latitude}/{longitude}")
     public DefaultResponse<List<CafeteriaDetailsResponse>> showCafeteriasDetailsNearby(
-            @PathVariable(value = "latitude") double latitude,
-            @PathVariable(value = "longitude") double longitude) {
+            @ApiParam(name = "현재 위도 값", required = true) @PathVariable(value = "latitude") double latitude,
+            @ApiParam(name = "현재 경도 값", required = true) @PathVariable(value = "longitude") double longitude) {
         try {
             List<Cafeteria> cafeterias = cafeteriaService.showCafeteriasNearby(latitude, longitude);
             return res(OK, FIND_CAFETERIA, toCafeteriasDetailsResponse(cafeterias));
