@@ -7,6 +7,12 @@
 
 </br >
 
+## 개발 기간
+
+- 2020.01.05 ~ 2021.02.15
+
+</br >
+
 ## 주요 기능
 
 ### 혜택 지원
@@ -35,4 +41,10 @@
   - Spring Data JPA
 - QueryDsl
 - MySQL 8.0.23
+
+</br >
+
+## 시연 영상
+
+https://www.youtube.com/watch?v=Z2akQLFzLl4
 
